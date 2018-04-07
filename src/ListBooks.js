@@ -11,23 +11,16 @@ class ListBooks extends React.Component {
     changed: false
   };
 
-  componentDidMount = async () => {
-    const books = await BooksAPI.getAll();
-    this.setState({
-      currentlyReading: books.filter(book => book.shelf === "currentlyReading"),
-      wantToRead: books.filter(book => book.shelf === "wantToRead"),
-      read: books.filter(book => book.shelf === "read")
-    });
-  };
+  componentDidMount = () => this.getBooks();
 
-  componentDidUpdate = async () => {
+  getBooks = async () => {
     const books = await BooksAPI.getAll();
     this.setState({
       currentlyReading: books.filter(book => book.shelf === "currentlyReading"),
       wantToRead: books.filter(book => book.shelf === "wantToRead"),
       read: books.filter(book => book.shelf === "read")
     });
-  };
+  }
 
   render() {
     const { currentlyReading, wantToRead, read } = this.state;
@@ -46,7 +39,7 @@ class ListBooks extends React.Component {
                     .filter(book => book.shelf === "currentlyReading")
                     .map((book, index) => (
                       <li key={index}>
-                        <Book book={book}/>
+                        <Book book={book} onChange={this.getBooks.bind(this)}/>
                       </li>
                     ))}
                 </ol>
@@ -60,7 +53,7 @@ class ListBooks extends React.Component {
                     .filter(book => book.shelf === "wantToRead")
                     .map((book, index) => (
                       <li key={index}>
-                        <Book book={book} />
+                        <Book book={book} onChange={this.getBooks.bind(this)}/>
                       </li>
                     ))}
                 </ol>
@@ -72,7 +65,7 @@ class ListBooks extends React.Component {
                 <ol className="books-grid">
                   {read.filter(book => book.shelf === "read").map((book, index) => (
                     <li key={index}>
-                      <Book book={book} />
+                      <Book book={book} onChange={this.getBooks.bind(this)}/>
                     </li>
                   ))}
                 </ol>
