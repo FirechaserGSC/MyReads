@@ -4,10 +4,32 @@ import Book from './Book';
 import * as BooksAPI from "./BooksAPI";
 
 class SearchBook extends React.Component {
+  // currentlyReading = [];
+  // wantToRead = [];
+  // read = [];
+
   state = {
     books: [],
     query: '',
+    shelves: {
+      currentlyReading: [],
+      wantToRead: [],
+      read: []
+    }
   };
+
+  componentDidMount = () => this.getBooks();
+
+  getBooks = async () => {
+    const books = await BooksAPI.getAll();
+    this.setState({
+      shelves: {
+        currentlyReading: books.filter(book => book.shelf === "currentlyReading").map(book => book.id),
+        wantToRead: books.filter(book => book.shelf === "wantToRead").map(book => book.id),
+        read: books.filter(book => book.shelf === "read").map(book => book.id)
+      }
+    });
+  }
 
   updateQuery = async query => {
     query = query.trim();
@@ -15,10 +37,18 @@ class SearchBook extends React.Component {
     if (!query) {
       this.setState({ books: [] })
     } else {
-      const searchResults = await BooksAPI.search(query);
+      let searchResults = await BooksAPI.search(query);
       if (!searchResults || searchResults.error) {
         this.setState({ books: [] })
       } else {
+        searchResults = searchResults.map(book => {
+          for (const shelf in this.state.shelves) {
+            if (this.state.shelves[shelf].includes(book.id)) {
+              book.shelf = shelf;
+            }
+          }
+          return book;
+        })
         this.setState({ books: searchResults});
       }
     }
