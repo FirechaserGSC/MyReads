@@ -17,9 +17,7 @@ class Book extends React.Component {
 
   render() {
     const { shelf } = this.state;
-    console.log('shelf', shelf);
     const { book } = this.props;
-    console.log(book.shelf);
     return (
       <div className="book">
         <div className="book-top">

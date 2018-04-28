@@ -4,10 +4,6 @@ import Book from './Book';
 import * as BooksAPI from "./BooksAPI";
 
 class SearchBook extends React.Component {
-  // currentlyReading = [];
-  // wantToRead = [];
-  // read = [];
-
   state = {
     books: [],
     query: '',
